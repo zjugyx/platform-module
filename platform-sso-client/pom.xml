@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.qingting.platform</groupId>
+		<artifactId>platform-module</artifactId>
+		<version>1.0.0</version>
+	</parent>
+	<artifactId>platform-sso-client</artifactId>
+	<packaging>jar</packaging>
+	<name>${project.artifactId}</name>
+	
+	<properties>
+		<!-- <servlet.version>3.1.0</servlet.version>
+		<spring.version>4.2.1.RELEASE</spring.version>
+		<slf4j.version>1.7.21</slf4j.version>
+		<logback.version>1.1.7</logback.version>
+		<slf4j.jcl.version>1.7.21</slf4j.jcl.version>
+		<mail.version>1.4.7</mail.version>
+		<druid.version>1.0.15</druid.version>
+		<activemq.version>5.13.3</activemq.version> -->
+		<platform.common.version>1.0.0</platform.common.version>
+	</properties>
+	
+	<dependencies>
+		<!-- J2EE支持 -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<!-- <version>${servlet.version}</version> -->
+			<scope>provided</scope>
+		</dependency>
+		<!-- spring -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<!-- <version>${spring.version}</version> -->
+		</dependency>
+		
+		<!-- 日志 -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<!-- <version>${slf4j.version}</version> -->
+		</dependency>
+		<!-- 日志可以根据子系统调整 -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<!-- <version>${logback.version}</version> -->
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<!-- <version>${logback.version}</version> -->
+		</dependency>
+		
+		<!-- 日志桥接，Spring中commons-logging替换为logback -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<!-- <version>${slf4j.jcl.version}</version> -->
+		</dependency>
+		
+		<!-- Json处理 -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<!-- <version>${druid.version}</version> -->
+		</dependency>
+		<!-- activeMQ -->
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-client</artifactId>
+			<!-- <version>${activemq.version}</version> -->
+		</dependency>
+		<!-- 公共引用 -->
+		<dependency>
+			<groupId>com.qingting.platform</groupId>
+			<artifactId>platform-common</artifactId>
+			<version>${platform.common.version}</version>
+  		</dependency>
+	</dependencies>
+</project>

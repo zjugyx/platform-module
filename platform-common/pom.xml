@@ -1,0 +1,58 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.qingting.platform</groupId>
+		<artifactId>platform-module</artifactId>
+		<version>1.0.0</version>
+	</parent>
+	<artifactId>platform-common</artifactId>
+  	<packaging>jar</packaging>
+  	<name>${project.artifactId}</name>
+  	
+  	<properties>
+  		<spring.version>4.2.1.RELEASE</spring.version>
+  		<kafka.version>0.10.2.1</kafka.version>
+  		<fastjson.version>1.2.29</fastjson.version>
+  		<servlet.version>3.1.0</servlet.version>
+  	</properties>
+  	
+  	<dependencies>
+  		<!-- J2EE支持-->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<!-- <version>${servlet.version}</version> -->
+			<scope>provided</scope>
+		</dependency>
+	  	<!-- kafka -->
+	    <dependency>
+			<groupId>org.apache.kafka</groupId>
+		    <artifactId>kafka_2.10</artifactId>
+		    <version>${kafka.version}</version>
+		</dependency>
+		<!-- spring -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<!-- <version>${spring.version}</version> -->
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+			<!-- <version>${spring.version}</version> -->
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<!-- <version>${spring.version}</version> -->
+		</dependency>
+		<!-- Json处理 -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<!-- <version>${fastjson.version}</version> -->
+		</dependency>
+  	</dependencies>
+  
+	
+</project>
