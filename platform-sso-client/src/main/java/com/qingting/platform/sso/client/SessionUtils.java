@@ -24,6 +24,7 @@ public class SessionUtils {
 	public static final String VALIDATE_CODE="_validateCode";
 	
 	public static SessionUser getSessionUser(HttpServletRequest request) {
+		System.out.println("获取sessionUser");
 		return (SessionUser) request.getSession().getAttribute(SESSION_USER);
 	}
 

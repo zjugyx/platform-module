@@ -80,7 +80,7 @@ public class PermissionFilter extends ClientFilter {
 			if (menu.getIsMenu()) {
 				menuList.add(menu);
 			}
-			if (menu.getUrl() != null) {
+			if (!com.qingting.platform.util.StringUtils.isBlank(menu.getUrl())) {
 				operateSet.add(menu.getUrl());
 			}
 		}

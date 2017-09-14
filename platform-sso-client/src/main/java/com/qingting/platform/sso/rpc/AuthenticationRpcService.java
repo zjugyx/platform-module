@@ -42,7 +42,7 @@ public interface AuthenticationRpcService {
 	public Result findByAccount(String account);
 	
 	/**
-	 * 注册用户
+	 * 注册用户(不分配应用，不分配角色)
 	 * @param token 当前登陆账号token(权限验证用)
 	 * @param appCode 应用编码
 	 * @param account 账号
@@ -52,11 +52,41 @@ public interface AuthenticationRpcService {
 	public Result register(String token,String appCode,String account,String password);
 	
 	/**
+	 * 注册用户并分配当前应用中的默认角色
+	 * @param token
+	 * @param appCode
+	 * @param account
+	 * @param password
+	 * @return Result
+	 */
+	public Result registerAndAllocateRole(String token,String appCode,String account,String password);
+	
+	/**
 	 * 删除用户
 	 * @param token 当前登陆账号token
 	 * @param appCode 应用编码
-	 * @param accountList 账户list
+	 * @param accountList 删除的账户集合
 	 * @return Result 返回结果
 	 */
 	public Result deleteByAccount(String token,String appCode,List<String> accountList);
+	
+	/**
+	 * 查询当前应用中用户的所有角色(不会返回已禁用的角色)
+	 * @param token
+	 * @param appCode
+	 * @param account
+	 * @return Result data为List<RpcRole>，其中isChecked属性:true代表用户有这个角色，flase代表无此角色
+	 */
+	Result listRole(String token,String appCode,String account);
+	
+	/**
+	 * 给用户分配appCode对应的应用的角色，如角色非appCode中的角色，会越权分配失败
+	 * <p>如果用户还未分配当前应用，默认会将当前应用分配给用户
+	 * @param token
+	 * @param appCode
+	 * @param account
+	 * @param roleIds 
+	 * @return Result
+	 */
+	public Result allocateRole(String token,String appCode,String account,List<Integer> roleIds);
 }
