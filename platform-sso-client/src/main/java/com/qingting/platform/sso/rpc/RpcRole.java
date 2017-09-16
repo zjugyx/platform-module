@@ -1,8 +1,11 @@
 package com.qingting.platform.sso.rpc;
 
+import java.io.Serializable;
 
-public class RpcRole {
-	
+public class RpcRole implements Serializable{
+
+	private static final long serialVersionUID = 4628586958827369684L;
+
 	/** ID */
 	private Integer id;
 	
