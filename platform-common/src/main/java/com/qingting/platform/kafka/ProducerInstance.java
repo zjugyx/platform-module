@@ -8,12 +8,10 @@ public class ProducerInstance extends ProducerBase{
 	/**
 	 * kafka生产者是线程安全的
 	 */
-	private Producer<String, String> producer = null;
+	private static Producer<String, String> producer = null;
 	
-	
-	public ProducerInstance() {
-		super();
-		this.producer=new KafkaProducer<String, String>(props);
+	static{
+		producer=new KafkaProducer<String, String>(props);
 	}
 
 	/*public ProducerInstance(Producer<K, V> producer) {
@@ -21,12 +19,12 @@ public class ProducerInstance extends ProducerBase{
 		this.producer = producer;
 	}*/
 
-	public void send(String topic, Integer partition, String key, String value){
+	public static void send(String topic, Integer partition, String key, String value){
 		ProducerRecord<String, String> record =new ProducerRecord<String,String>(topic,partition, key,value);
 		producer.send(record);
 	}
 	
-	public void close(){
+	public static void close(){
 		producer.close();
 	}
 	
