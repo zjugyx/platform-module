@@ -1,18 +1,23 @@
 package com.qingting.platform.kafka;
 
+import java.util.Arrays;
 import java.util.Properties;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
 
 import com.qingting.platform.config.ConfigUtils;
 
 
-public abstract class ConsumerBase {
-	private static final Logger LOGGER = LoggerFactory.getLogger(ConsumerBase.class);
+public class ConsumerBase {
 	
-	public static Properties props =null;
+	public static Properties props;
+	
+	/**
+	 * 注：kafka消费者不是线程安全的
+	 */
+	private KafkaConsumer<String, String> consumer;
 	
 	static{
 		props = new Properties();
@@ -45,4 +50,25 @@ public abstract class ConsumerBase {
         //value
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ConfigUtils.getProperty("value.deserializer"));
 	}
+	/**
+	 * 主题注入，同时创建消费者
+	 * @param topic
+	 */
+	public void setTopic(String topic) {
+		this.consumer = new KafkaConsumer<String, String>(props);
+		this.consumer.subscribe(Arrays.asList(topic));
+	}
+
+	public KafkaConsumer<String, String> getConsumer() {
+		return consumer;
+	}
+	/**
+	 * 消息拉取
+	 * @param timeout
+	 * @return ConsumerRecords<String,String>
+	 */
+	public ConsumerRecords<String, String> poll(Long timeout){
+		return consumer.poll(timeout);
+	}
+	
 }

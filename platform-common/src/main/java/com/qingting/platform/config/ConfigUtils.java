@@ -25,4 +25,9 @@ public class ConfigUtils extends PropertyPlaceholderConfigurer {
 	public static String getProperty(String name) {
 		return properties.getProperty(name);
 	}
+	
+	public static Integer getIntProperty(String name){
+		String property = properties.getProperty(name);
+		return Integer.parseInt(property);
+	}
 }

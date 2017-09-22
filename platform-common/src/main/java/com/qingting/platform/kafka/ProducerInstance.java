@@ -14,17 +14,12 @@ public class ProducerInstance extends ProducerBase{
 		producer=new KafkaProducer<String, String>(props);
 	}
 
-	/*public ProducerInstance(Producer<K, V> producer) {
-		super();
-		this.producer = producer;
-	}*/
-
-	public static void send(String topic, Integer partition, String key, String value){
+	public void send(String topic, Integer partition, String key, String value){
 		ProducerRecord<String, String> record =new ProducerRecord<String,String>(topic,partition, key,value);
 		producer.send(record);
 	}
 	
-	public static void close(){
+	public void close(){
 		producer.close();
 	}
 	
