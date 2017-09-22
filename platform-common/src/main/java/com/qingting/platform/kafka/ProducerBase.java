@@ -10,7 +10,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 
 import com.qingting.platform.config.ConfigUtils;
 
-public abstract class ProducerBase {
+public class ProducerBase {
 	
 	
 	public static Properties props =null;

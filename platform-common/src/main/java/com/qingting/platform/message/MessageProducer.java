@@ -1,5 +1,7 @@
 package com.qingting.platform.message;
 
+import org.apache.kafka.clients.producer.Callback;
+
 import com.alibaba.fastjson.JSON;
 import com.qingting.platform.kafka.ProducerBase;
 
@@ -7,7 +9,15 @@ public class MessageProducer {
 	
 	private ProducerBase producerBase;
 	
-	private SendCallback sendCallback;
+	private Callback callback;
+	
+	public void setProducerBase(ProducerBase producerBase) {
+		this.producerBase = producerBase;
+	}
+	
+	public void setCallback(Callback callback) {
+		this.callback = callback;
+	}
 	/**
 	 * 异步发送,不判断成功与否
 	 * @param <T>
@@ -29,7 +39,7 @@ public class MessageProducer {
 		producerBase.send(topic, partition, 
 				messageServer.getType(), 
 				JSON.toJSONString(messageServer),
-				sendCallback
+				callback
 				);
 	}
 }
