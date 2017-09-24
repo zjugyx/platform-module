@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.qingting.platform.kafka.ConsumerBase;
 
@@ -27,20 +26,28 @@ public class MessageConsumer implements InitializingBean {
 	 */
 	private MessageHandler messageHandler;
 	
+	
 	/**
 	 * 该类实体创建后，独立线程消费
 	 */
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		while (true) {
-			ConsumerRecords<String, String> records = consumerBase.poll(timeout);
-			for (ConsumerRecord<String, String> record : records){
-				LOGGER.debug("consumer data: offset = {}, key = {}, value = {}", record.offset(), record.key(), record.value());
-				
-				//BaseBean<String> bean = JSON.parseObject("",new TypeReference<BaseBean<String>>() {});   
-				messageHandler.parser(record.key(),JSON.parseObject(record.value(),MessageServer.class));
-            }
-        }
+		 new Thread(new Runnable(){
+			@Override
+			public void run() {
+				while (true) {
+					ConsumerRecords<String, String> records = consumerBase.poll(timeout);
+					for (ConsumerRecord<String, String> record : records){
+						LOGGER.debug("consumer poll record: offset = {}, key = {}, value = {}", record.offset(), record.key(), record.value());
+						try{
+							messageHandler.parser(record.key(),JSON.parseObject(record.value(),new TypeReference<MessageServer<Object>>() {}));
+						}catch(Exception e){
+							LOGGER.debug("message format error. please check the message of json. offset = {}, key = {}, value = {}", record.offset(), record.key(), record.value());
+						}
+		            }
+		        }
+			}
+        }).start();
 	}
 
 	public void setTimeout(Long timeout) {

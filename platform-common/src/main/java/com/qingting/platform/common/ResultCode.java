@@ -28,7 +28,12 @@ public class ResultCode {
 	// SSO 用户授权出错
 	public final static int SSO_TOKEN_ERROR = 1001; // TOKEN未授权或已过期
 	public final static int SSO_PERMISSION_ERROR = 1002; // 没有访问权限
+	
 	// 客户端登陆出错
 	public final static int CUSTOM_LOGIN_ERROR=2001; //客户端登陆错误
 	public final static int CUSTOM_USER_NOEXIST=2002; //客户端用户信息不存在
+	
+	//操作提示
+	public final static int REMIND=3000;//通用提示
+	public final static int REPEAT_OPERATE=3001;//重复操作
 }
