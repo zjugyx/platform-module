@@ -25,8 +25,7 @@ public class ResultCode {
 	public final static int REMIND=3000;//通用提示
 	public final static int REPEAT_OPERATE=3001;//重复操作
 	public final static int RESULT_NULL=3002;//结果为空
-	
-	
+	public final static int DB_NO_DATA=3003;//数据库没有数据
 	// 账号注册代码
 	public final static int NOEXIST=8001;//数据不存在
 	public final static int ISEXIST_ERROR=8002;//数据已经存在错误

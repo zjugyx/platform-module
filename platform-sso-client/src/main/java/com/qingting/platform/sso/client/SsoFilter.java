@@ -116,8 +116,10 @@ public class SsoFilter extends ClientFilter {
 				LOGGER.debug("未登陆，重定向登陆："+ssoLoginUrl);
 				response.sendRedirect(ssoLoginUrl);
 			}else{
-				String ssoLoginUrl = new StringBuilder().append(getLocalUrl(request)+loginPath).append("?backUrl=")
-						.append(request.getRequestURL()).append("&appCode=").append(ssoAppCode).toString();
+				/*String ssoLoginUrl = new StringBuilder().append(getLocalUrl(request)+loginPath).append("?backUrl=")
+						.append(request.getRequestURL()).append("&appCode=").append(ssoAppCode).toString();*/
+				String ssoLoginUrl = new StringBuilder().append(SsoLocalUtil.getLocalUrl(request)+loginPath).append("?backUrl=")
+						.append(SsoLocalUtil.getLocalUrl(request)+request.getServletPath()).append("&appCode=").append(ssoAppCode).toString();
 				LOGGER.debug("未登陆，重定向登陆："+ssoLoginUrl);
 				response.sendRedirect(ssoLoginUrl);
 			}
@@ -159,10 +161,16 @@ public class SsoFilter extends ClientFilter {
 	 * @param request
 	 * @return String
 	 */
-	private String getLocalUrl(HttpServletRequest request) {
-		return new StringBuilder().append(request.getScheme()).append("://").append(request.getServerName())
-				.append(":").append(request.getServerPort() == 80 ? "" : request.getServerPort())
-				.append(request.getContextPath()).toString();
-	}
+	//已移动到SsoLocalUtil中,方便客户端域名配置使用
+	/*private String getLocalUrl(HttpServletRequest request) {
+		if(ssoClientUrl!=null && !StringUtils.isBlank(ssoClientUrl)){
+			String contextPath=request.getContextPath();
+			return ssoClientUrl;//+request.getContextPath();
+		}else{
+			return new StringBuilder().append(request.getScheme()).append("://").append(request.getServerName())
+					.append(":").append(request.getServerPort() == 80 ? "" : request.getServerPort())
+					.append(request.getContextPath()).toString();
+		}
+	}*/
 	
 }

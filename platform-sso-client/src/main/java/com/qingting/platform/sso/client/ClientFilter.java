@@ -38,6 +38,7 @@ public abstract class ClientFilter implements Filter {
 	 * 单点登录服务端URL
 	 */
 	protected static String ssoServerUrl = ConfigUtils.getProperty("sso.server.url");
+	
 	/**
 	 * 当前应用关联权限系统的应用编码
 	 */
