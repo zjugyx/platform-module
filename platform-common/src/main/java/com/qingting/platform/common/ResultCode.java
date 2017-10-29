@@ -16,6 +16,7 @@ public class ResultCode {
 	// SSO 用户授权出错
 	public final static int SSO_TOKEN_ERROR = 1001; // TOKEN未授权或已过期
 	public final static int SSO_PERMISSION_ERROR = 1002; // 没有访问权限
+	public final static int SSO_PARSE_ERROR=1003;// TOKEN解析错误
 	
 	// 客户端登陆出错
 	public final static int CUSTOM_LOGIN_ERROR=2001; //客户端登陆错误

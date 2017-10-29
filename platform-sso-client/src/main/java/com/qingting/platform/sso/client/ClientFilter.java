@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.AntPathMatcher;
+import org.springframework.util.PathMatcher;
 
 import com.alibaba.fastjson.JSON;
 import com.qingting.platform.common.Result;
@@ -68,10 +70,19 @@ public abstract class ClientFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
 			ServletException {
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
-		if (excludeList != null && excludeList.contains(httpRequest.getServletPath())){
-			LOGGER.debug("Path拦截排除：{}",httpRequest.getServletPath());
-			chain.doFilter(request, response);
-		}else {
+		PathMatcher  matcher = new AntPathMatcher(); 
+		boolean flag = false;
+		if(excludeList!=null && excludeList.size()>0){ 
+	        for (String passedPath : excludeList) { 
+	        	flag = matcher.match(passedPath, httpRequest.getServletPath()); 
+	            if(flag){ 
+	            	LOGGER.info("sso client request path {} is matched {},filter chain will be continued.",httpRequest.getServletPath(),passedPath); 
+	            	chain.doFilter(request, response);
+	            	break;
+	            } 
+	        } 
+	    } 
+		if(!flag){
 			HttpServletResponse httpResponse = (HttpServletResponse) response;
 			try {
 				doFilter(httpRequest, httpResponse, chain);

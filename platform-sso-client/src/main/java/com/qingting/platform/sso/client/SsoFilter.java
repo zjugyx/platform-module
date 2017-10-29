@@ -13,8 +13,13 @@ import org.slf4j.LoggerFactory;
 
 import com.qingting.platform.common.ResultCode;
 import com.qingting.platform.exception.ServiceException;
+import com.qingting.platform.sso.jwt.JWTProvider;
 import com.qingting.platform.sso.rpc.RpcUser;
+import com.qingting.platform.util.CookieUtils;
 import com.qingting.platform.util.StringUtils;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 
 
 /**
@@ -50,11 +55,57 @@ public class SsoFilter extends ClientFilter {
 	public void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		LOGGER.debug("sso登陆拦截");
+		System.out.println("method:"+request.getMethod());
+		/*if(request.getMethod().equals("OPTIONS")){//跨域请求
+			if (getRequestToken(request) != null) {
+				try {
+					Claims claims = JWTProvider.parseJWT(getRequestToken(request));
+					if(claims!=null&&claims.getSubject()!=null){
+						LOGGER.debug("claims已登陆,subject="+claims.getSubject());
+						chain.doFilter(request, response);
+					}else{
+						LOGGER.debug("claims空，未登陆"+claims);
+						throw new ServiceException(ResultCode.SSO_TOKEN_ERROR, "claims空，未登录或已超时");
+					}
+				} catch (ExpiredJwtException e) {
+					e.printStackTrace();
+					throw new ServiceException(ResultCode.SSO_TOKEN_ERROR, "未登录或已超时");
+				} catch (Exception e){
+					e.printStackTrace();
+					throw new ServiceException(ResultCode.ERROR, e.getMessage());
+				}
+			}else{
+				redirectLogin(request, response);
+			}
+		}else{
+			String token = getLocalToken(request);
+			if (token == null) {
+				String requestToken=getRequestToken(request);
+				if (requestToken != null) {
+					
+					// 再跳转一次当前URL，以便去掉URL中token参数
+					response.sendRedirect(request.getRequestURL().toString());
+				}
+				else
+					redirectLogin(request, response);
+			}
+			else if (isLogined(token)){
+				LOGGER.debug("已登陆");
+				chain.doFilter(request, response);
+			}else{
+				redirectLogin(request, response);
+			}
+		}*/
+		/*if(request.getMethod().equals("OPTIONS")){
+			chain.doFilter(request, response);
+		}*/
 		String token = getLocalToken(request);
 		if (token == null) {
-			if (getParameterToken(request) != null) {
+			if (getRequestToken(request) != null) {
 				// 再跳转一次当前URL，以便去掉URL中token参数
-				response.sendRedirect(request.getRequestURL().toString());
+				//response.sendRedirect(request.getRequestURL().toString());
+				
+				chain.doFilter(request, response);
 			}
 			else
 				redirectLogin(request, response);
@@ -82,8 +133,9 @@ public class SsoFilter extends ClientFilter {
 	 * 获取服务端回传token参数且验证
 	 * @param request
 	 * @return String
-	 * @throws IOException 
+	 * @throws IOException
 	 */
+	@Deprecated
 	private String getParameterToken(HttpServletRequest request) throws IOException {
 		String token = request.getParameter(SSO_TOKEN_NAME);
 		if (token != null) {
@@ -95,7 +147,43 @@ public class SsoFilter extends ClientFilter {
 		}
 		return null;
 	}
+	/**
+	 * 获取token参数且验证
+	 * @param request
+	 * @return String
+	 * @throws IOException 
+	 */
+	public static String getRequestToken(HttpServletRequest request) throws IOException {
+		String token=null;
+		String authToken=null;
+		//检查cookie中的token
+		token=CookieUtils.getCookie(request, "token");
+		authToken=authentication(request,token);
+		if(authToken!=null)
+			return authToken;
+		//检查请求参数的token
+		token = request.getParameter(SSO_TOKEN_NAME);
+		authToken=authentication(request,token);
+		if(authToken!=null)
+			return authToken;
+		//检查header中的Authorization
+		token=request.getHeader("Authorization");
+		authToken=authentication(request,token);
+		if(authToken!=null)
+			return authToken;
+		return null;
+	}
 
+	private static String authentication(HttpServletRequest request,String token){
+		if (token != null) {
+			RpcUser rpcUser = authenticationRpcService.findAuthInfo(token);
+			if (rpcUser != null) {
+				invokeAuthenticationInfoInSession(request, token, rpcUser.getAccount());
+				return token;
+			}
+		}
+		return null;
+	}
 	/**
 	 * 跳转登录
 	 * 
@@ -133,7 +221,7 @@ public class SsoFilter extends ClientFilter {
 	 * @param account
 	 * @param profile
 	 */
-	private void invokeAuthenticationInfoInSession(HttpServletRequest request, String token, String account) {
+	private static void invokeAuthenticationInfoInSession(HttpServletRequest request, String token, String account) {
 		SessionUtils.setSessionUser(request, new SessionUser(token, account));
 	}
 
@@ -152,25 +240,12 @@ public class SsoFilter extends ClientFilter {
 	 * @return boolean
 	 */
 	private boolean isAjaxRequest(HttpServletRequest request) {
-		String requestedWith = request.getHeader("X-Requested-With");
-		return requestedWith != null ? "XMLHttpRequest".equals(requestedWith) : false;
-	}
-	
-	/**
-	 * 获取当前上下文路径
-	 * @param request
-	 * @return String
-	 */
-	//已移动到SsoLocalUtil中,方便客户端域名配置使用
-	/*private String getLocalUrl(HttpServletRequest request) {
-		if(ssoClientUrl!=null && !StringUtils.isBlank(ssoClientUrl)){
-			String contextPath=request.getContextPath();
-			return ssoClientUrl;//+request.getContextPath();
+		if(request.getMethod().equals("OPTIONS")){//跨域试探
+			String requestedWith=request.getHeader("Access-Control-Request-Headers");
+			return requestedWith != null ? "x-requested-with".equals(requestedWith) : false;
 		}else{
-			return new StringBuilder().append(request.getScheme()).append("://").append(request.getServerName())
-					.append(":").append(request.getServerPort() == 80 ? "" : request.getServerPort())
-					.append(request.getContextPath()).toString();
+			String requestedWith = request.getHeader("X-Requested-With");
+			return requestedWith != null ? "XMLHttpRequest".equals(requestedWith) : false;
 		}
-	}*/
-	
+	}
 }

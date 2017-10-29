@@ -46,6 +46,10 @@
 			<artifactId>spring-webmvc</artifactId>
 			<!-- <version>${spring.version}</version> -->
 		</dependency>
+		<dependency>
+		    <groupId>org.springframework.session</groupId>
+		    <artifactId>spring-session-data-redis</artifactId>
+		</dependency>
 		<!-- Json处理 -->
 		<dependency>
 			<groupId>com.alibaba</groupId>
